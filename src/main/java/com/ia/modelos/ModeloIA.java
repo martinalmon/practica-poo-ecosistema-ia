@@ -2,7 +2,6 @@ package com.ia.modelos;
 
 public class ModeloIA {
 
-
     private String nombre;
     private double precision;
     private int epocasEntrenadas;
@@ -56,7 +55,5 @@ public class ModeloIA {
         System.out.println("Precision: " + precision + "%");
         System.out.println("Epocas entrenadas: " + epocasEntrenadas);
         System.out.println("Tasa de aprendizaje: " + tasaAprendizaje);
-        System.out.println("-----------------------------------");
     }
-}
 }
