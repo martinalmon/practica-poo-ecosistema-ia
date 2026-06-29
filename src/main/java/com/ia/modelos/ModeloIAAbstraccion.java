@@ -1,5 +1,7 @@
 package com.ia.modelos;
 
+import com.ia.excepciones.IAComponentException;
+
 public abstract class ModeloIAAbstraccion {
 
     private String nombre;
@@ -31,12 +33,16 @@ public abstract class ModeloIAAbstraccion {
     }
 
     public void setTasaAprendizaje(double tasaAprendizaje) {
-        if (tasaAprendizaje > 0.0 && tasaAprendizaje < 1.0) {
-            this.tasaAprendizaje = tasaAprendizaje;
-            System.out.println("Tasa de aprendizaje actualizada correctamente para " + nombre + ": " + tasaAprendizaje);
-        } else {
-            System.out.println("Advertencia: tasa de aprendizaje invalida para " + nombre + ". Se mantiene el valor anterior: " + this.tasaAprendizaje);
+        if (tasaAprendizaje <= 0.0 || tasaAprendizaje >= 1.0) {
+            throw new IAComponentException(
+                    "Error: La tasa de aprendizaje " + tasaAprendizaje
+                            + " esta fuera del rango permitido (0.0 - 1.0)."
+            );
         }
+
+        this.tasaAprendizaje = tasaAprendizaje;
+        System.out.println("Tasa de aprendizaje actualizada correctamente para "
+                + nombre + ": " + tasaAprendizaje);
     }
 
     protected void incrementarEpocas() {
