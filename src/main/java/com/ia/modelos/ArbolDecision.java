@@ -1,6 +1,6 @@
 package com.ia.modelos;
 
-public class ArbolDecision extends ModeloIA {
+public class ArbolDecision extends ModeloIAAbstraccion {
 
     private int profundidadMaxima;
 
@@ -11,6 +11,14 @@ public class ArbolDecision extends ModeloIA {
 
     public int getProfundidadMaxima() {
         return profundidadMaxima;
+    }
+
+    @Override
+    public void entrenar() {
+        incrementarEpocas();
+
+        double incremento = getTasaAprendizaje() * (profundidadMaxima / 2.0);
+        aumentarPrecision(incremento);
     }
 
     @Override

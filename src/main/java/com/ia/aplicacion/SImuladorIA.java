@@ -1,33 +1,57 @@
 package com.ia.aplicacion;
-import com.ia.modelos.ModeloIA;
 
-import com.ia.modelos.ModeloIA;
+import com.ia.modelos.ModeloIAAbstraccion;
+import com.ia.modelos.RedNeuronal;
+import com.ia.modelos.ArbolDecision;
+import com.ia.modelos.ModeloRegresion;
+import com.ia.interfaces.Tokenizador;
+import com.ia.interfaces.TokenizadorBasico;
+import com.ia.interfaces.TokenizadorHuggingFace;
 
-public class SImuladorIA {
+public class SimuladorIA {
+
     public static void main(String[] args) {
 
-        ModeloIA redNeuronal = new ModeloIA("RedNeuronal", 0.3);
-        ModeloIA arbolDecision = new ModeloIA("ArbolDecision", 0.2);
+        System.out.println("=== Validacion de abstraccion ===");
+        System.out.println("No se puede instanciar directamente ModeloIAAbstraccion porque es una clase abstracta.");
 
-        System.out.println("=== Estado inicial de los modelos ===");
-        redNeuronal.mostrarMetricas();
-        arbolDecision.mostrarMetricas();
+        // Esta linea no debe descomentarse porque provocaria error de compilacion:
+        // ModeloIAAbstraccion modeloGenerico = new ModeloIAAbstraccion("ModeloGenerico", 0.3);
 
-        System.out.println("=== Intento de asignar una tasa invalida ===");
-        redNeuronal.setTasaAprendizaje(-0.5);
-        arbolDecision.setTasaAprendizaje(1.5);
+        System.out.println();
 
-        System.out.println("=== Entrenamiento de los modelos ===");
+        ModeloIAAbstraccion[] modelos = new ModeloIAAbstraccion[3];
 
-        for (int i = 1; i <= 3; i++) {
-            System.out.println("Epoca de simulacion " + i);
+        modelos[0] = new RedNeuronal("RedNeuronal", 0.3, 5);
+        modelos[1] = new ArbolDecision("ArbolDecision", 0.2, 10);
+        modelos[2] = new ModeloRegresion("ModeloRegresion", 0.1, 0.01);
 
-            redNeuronal.entrenar();
-            arbolDecision.entrenar();
+        System.out.println("=== Entrenamiento usando referencias abstractas ===");
 
-            redNeuronal.mostrarMetricas();
-            arbolDecision.mostrarMetricas();
+        for (ModeloIAAbstraccion modelo : modelos) {
+            modelo.entrenar();
+            modelo.mostrarMetricas();
         }
+
+        System.out.println();
+        System.out.println("=== Procesamiento de texto con interfaz Tokenizador ===");
+
+        String texto = "La inteligencia artificial aprende de los datos.";
+
+        Tokenizador tokenizadorBasico = new TokenizadorBasico();
+        Tokenizador tokenizadorHuggingFace = new TokenizadorHuggingFace();
+
+        System.out.println("Tokenizador basico:");
+        mostrarTokens(tokenizadorBasico.dividirTexto(texto));
+
+        System.out.println("Tokenizador HuggingFace:");
+        mostrarTokens(tokenizadorHuggingFace.dividirTexto(texto));
     }
-}
+
+    public static void mostrarTokens(String[] tokens) {
+        for (String token : tokens) {
+            System.out.println("- " + token);
+        }
+        System.out.println("-----------------------------------");
+    }
 }
