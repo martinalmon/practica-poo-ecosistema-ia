@@ -1,8 +1,8 @@
 package com.ia.modelos;
 
-public class ArbolDecision extends ModeloIAAbstraccion {
+public final class ArbolDecision extends ModeloIAAbstraccion {
 
-    private int profundidadMaxima;
+    private final int profundidadMaxima;
 
     public ArbolDecision(String nombre, double tasaAprendizaje, int profundidadMaxima) {
         super(nombre, tasaAprendizaje);

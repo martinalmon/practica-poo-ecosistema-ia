@@ -1,8 +1,8 @@
 package com.ia.modelos;
 
-public class RedNeuronal extends ModeloIAAbstraccion {
+public final class RedNeuronal extends ModeloIAAbstraccion {
 
-    private int capasOcultas;
+    private final int capasOcultas;
 
     public RedNeuronal(String nombre, double tasaAprendizaje, int capasOcultas) {
         super(nombre, tasaAprendizaje);
