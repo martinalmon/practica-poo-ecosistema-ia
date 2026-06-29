@@ -1,5 +1,6 @@
 package com.ia.aplicacion;
 
+import com.ia.dto.PromptInput;
 import com.ia.excepciones.IAComponentException;
 import com.ia.interfaces.Tokenizador;
 import com.ia.interfaces.TokenizadorBasico;
@@ -16,19 +17,23 @@ import java.util.Map;
 
 public class SimuladorIA {
 
-    public static void main(String[] args) {
+    private static final String TOKENIZADOR_BASICO = "BASICO";
+    private static final String TOKENIZADOR_HUGGING_FACE = "HUGGING_FACE";
+    private static final String TOKENIZADOR_NO_REGISTRADO = "OPEN_AI";
 
-        System.out.println("=== Fase 7: Manejo de excepciones personalizadas ===");
+    public static void main(String[] args) {
+        System.out.println("=== Fase 8: Java 17 y auditoria de calidad ===");
         System.out.println();
 
+        ejecutarSimulacionModelos();
+        ejecutarProcesamientoTexto();
+    }
+
+    private static void ejecutarSimulacionModelos() {
         try {
-            List<ModeloIAAbstraccion> inventarioModelos = new ArrayList<>();
+            List<ModeloIAAbstraccion> inventarioModelos = crearInventarioModelos();
 
-            inventarioModelos.add(new RedNeuronal("RedNeuronal", 0.3, 5));
-            inventarioModelos.add(new ArbolDecision("ArbolDecision", 0.2, 10));
-            inventarioModelos.add(new ModeloRegresion("ModeloRegresion", 0.1, 0.01));
-
-            System.out.println("=== Inventario dinamico de modelos ===");
+            System.out.println("=== Entrenamiento con jerarquia sealed ===");
 
             for (ModeloIAAbstraccion modelo : inventarioModelos) {
                 modelo.entrenar();
@@ -36,71 +41,99 @@ public class SimuladorIA {
                 modelo.mostrarMetricas();
             }
 
-            System.out.println();
-            System.out.println("=== Prueba de error con tasa invalida ===");
-
-            RedNeuronal modeloInvalido = new RedNeuronal("RedNeuronalInvalida", -0.5, 4);
-            inventarioModelos.add(modeloInvalido);
+            System.out.println("=== Prueba controlada de excepcion ===");
+            inventarioModelos.add(new RedNeuronal("RedNeuronalInvalida", -0.5, 3));
 
         } catch (IAComponentException error) {
             System.out.println("Excepcion capturada correctamente:");
             System.out.println(error.getMessage());
         } finally {
-            System.out.println("Auditoria de modelos finalizada correctamente.");
-            System.out.println("-----------------------------------");
-        }
-
-        try {
-            Map<String, Tokenizador> catalogoTokenizadores = new HashMap<>();
-
-            catalogoTokenizadores.put("BASICO", new TokenizadorBasico());
-            catalogoTokenizadores.put("HUGGING_FACE", new TokenizadorHuggingFace());
-
-            String parrafo = "La inteligencia artificial aprende de los datos.";
-
-            System.out.println();
-            System.out.println("=== Catalogo de tokenizadores ===");
-            System.out.println("Tokenizadores registrados: " + catalogoTokenizadores.keySet());
-
-            Tokenizador tokenizadorSeleccionado = obtenerTokenizador(catalogoTokenizadores, "HUGGING_FACE");
-
-            System.out.println();
-            System.out.println("=== Procesamiento usando tokenizador HUGGING_FACE ===");
-
-            String[] tokens = tokenizadorSeleccionado.dividirTexto(parrafo);
-
-            for (String token : tokens) {
-                System.out.println("- " + token);
-            }
-
-            System.out.println();
-            System.out.println("=== Prueba de error con tokenizador inexistente ===");
-
-            Tokenizador tokenizadorInexistente = obtenerTokenizador(catalogoTokenizadores, "OPEN_AI");
-            String[] tokensError = tokenizadorInexistente.dividirTexto(parrafo);
-
-            for (String token : tokensError) {
-                System.out.println("- " + token);
-            }
-
-        } catch (IAComponentException error) {
-            System.out.println("Excepcion capturada correctamente:");
-            System.out.println(error.getMessage());
-        } finally {
-            System.out.println("Auditoria de tokenizadores finalizada correctamente.");
+            System.out.println("Auditoria de modelos finalizada.");
             System.out.println("-----------------------------------");
         }
     }
 
-    public static Tokenizador obtenerTokenizador(Map<String, Tokenizador> catalogoTokenizadores, String clave) {
-        Tokenizador tokenizador = catalogoTokenizadores.get(clave);
+    private static List<ModeloIAAbstraccion> crearInventarioModelos() {
+        List<ModeloIAAbstraccion> inventarioModelos = new ArrayList<>();
+
+        inventarioModelos.add(new RedNeuronal("RedNeuronal", 0.3, 5));
+        inventarioModelos.add(new ArbolDecision("ArbolDecision", 0.2, 10));
+        inventarioModelos.add(new ModeloRegresion("ModeloRegresion", 0.1, 0.01));
+
+        return inventarioModelos;
+    }
+
+    private static void ejecutarProcesamientoTexto() {
+        try {
+            Map<String, Tokenizador> catalogoTokenizadores = crearCatalogoTokenizadores();
+
+            PromptInput promptInput = new PromptInput(
+                    "Eres un asistente de inteligencia artificial.",
+                    "La inteligencia artificial aprende de los datos."
+            );
+
+            System.out.println();
+            System.out.println("=== Prompt recibido mediante record ===");
+            System.out.println(promptInput);
+
+            Tokenizador tokenizador = seleccionarTokenizador(
+                    TOKENIZADOR_HUGGING_FACE,
+                    catalogoTokenizadores
+            );
+
+            System.out.println();
+            System.out.println("=== Procesamiento usando switch expression ===");
+            mostrarTokens(tokenizador.dividirTexto(promptInput.userQuery()));
+
+            System.out.println("=== Prueba controlada con tokenizador inexistente ===");
+            seleccionarTokenizador(TOKENIZADOR_NO_REGISTRADO, catalogoTokenizadores);
+
+        } catch (IAComponentException error) {
+            System.out.println("Excepcion capturada correctamente:");
+            System.out.println(error.getMessage());
+        } finally {
+            System.out.println("Auditoria de tokenizadores finalizada.");
+            System.out.println("-----------------------------------");
+        }
+    }
+
+    private static Map<String, Tokenizador> crearCatalogoTokenizadores() {
+        Map<String, Tokenizador> catalogoTokenizadores = new HashMap<>();
+
+        catalogoTokenizadores.put(TOKENIZADOR_BASICO, new TokenizadorBasico());
+        catalogoTokenizadores.put(TOKENIZADOR_HUGGING_FACE, new TokenizadorHuggingFace());
+
+        return catalogoTokenizadores;
+    }
+
+    private static Tokenizador seleccionarTokenizador(
+            String clave,
+            Map<String, Tokenizador> catalogoTokenizadores
+    ) {
+        Tokenizador tokenizador = switch (clave) {
+            case TOKENIZADOR_BASICO -> catalogoTokenizadores.get(TOKENIZADOR_BASICO);
+            case TOKENIZADOR_HUGGING_FACE -> catalogoTokenizadores.get(TOKENIZADOR_HUGGING_FACE);
+            default -> throw new IAComponentException(
+                    "Error: El tokenizador solicitado con la clave '" + clave
+                            + "' no esta registrado en el catalogo."
+            );
+        };
 
         if (tokenizador == null) {
             throw new IAComponentException(
-                    "Error: El tokenizador solicitado con la clave '" + clave + "' no esta registrado en el catalogo."
+                    "Error: El tokenizador solicitado con la clave '" + clave
+                            + "' no esta disponible en memoria."
             );
         }
 
         return tokenizador;
+    }
+
+    private static void mostrarTokens(String[] tokens) {
+        for (String token : tokens) {
+            System.out.println("- " + token);
+        }
+
+        System.out.println("-----------------------------------");
     }
 }

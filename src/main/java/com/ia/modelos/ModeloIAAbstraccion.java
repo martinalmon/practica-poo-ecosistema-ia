@@ -2,14 +2,15 @@ package com.ia.modelos;
 
 import com.ia.excepciones.IAComponentException;
 
-public abstract class ModeloIAAbstraccion {
+public sealed abstract class ModeloIAAbstraccion
+        permits RedNeuronal, ArbolDecision, ModeloRegresion {
 
     private String nombre;
     private double precision;
     private int epocasEntrenadas;
     private double tasaAprendizaje;
 
-    public ModeloIAAbstraccion(String nombre, double tasaAprendizaje) {
+    protected ModeloIAAbstraccion(String nombre, double tasaAprendizaje) {
         this.nombre = nombre;
         this.precision = 50.0;
         this.epocasEntrenadas = 0;
@@ -32,7 +33,7 @@ public abstract class ModeloIAAbstraccion {
         return tasaAprendizaje;
     }
 
-    public void setTasaAprendizaje(double tasaAprendizaje) {
+    public final void setTasaAprendizaje(double tasaAprendizaje) {
         if (tasaAprendizaje <= 0.0 || tasaAprendizaje >= 1.0) {
             throw new IAComponentException(
                     "Error: La tasa de aprendizaje " + tasaAprendizaje
@@ -41,15 +42,13 @@ public abstract class ModeloIAAbstraccion {
         }
 
         this.tasaAprendizaje = tasaAprendizaje;
-        System.out.println("Tasa de aprendizaje actualizada correctamente para "
-                + nombre + ": " + tasaAprendizaje);
     }
 
-    protected void incrementarEpocas() {
+    protected final void incrementarEpocas() {
         this.epocasEntrenadas++;
     }
 
-    protected void aumentarPrecision(double incremento) {
+    protected final void aumentarPrecision(double incremento) {
         this.precision += incremento;
 
         if (this.precision > 100.0) {

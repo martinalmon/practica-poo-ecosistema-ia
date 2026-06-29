@@ -1,8 +1,8 @@
 package com.ia.modelos;
 
-public class ModeloRegresion extends ModeloIAAbstraccion {
+public final class ModeloRegresion extends ModeloIAAbstraccion {
 
-    private double coeficienteRegularizacion;
+    private final double coeficienteRegularizacion;
 
     public ModeloRegresion(String nombre, double tasaAprendizaje, double coeficienteRegularizacion) {
         super(nombre, tasaAprendizaje);
@@ -17,7 +17,7 @@ public class ModeloRegresion extends ModeloIAAbstraccion {
     public void entrenar() {
         incrementarEpocas();
 
-        double incremento = getTasaAprendizaje() * 10 - coeficienteRegularizacion;
+        double incremento = (getTasaAprendizaje() * 10) - coeficienteRegularizacion;
         aumentarPrecision(incremento);
     }
 
