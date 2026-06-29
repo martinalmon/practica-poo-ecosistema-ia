@@ -1,6 +1,6 @@
 package com.ia.modelos;
 
-public class RedNeuronal extends ModeloIA {
+public class RedNeuronal extends ModeloIAAbstraccion {
 
     private int capasOcultas;
 
@@ -11,6 +11,14 @@ public class RedNeuronal extends ModeloIA {
 
     public int getCapasOcultas() {
         return capasOcultas;
+    }
+
+    @Override
+    public void entrenar() {
+        incrementarEpocas();
+
+        double incremento = getTasaAprendizaje() * capasOcultas;
+        aumentarPrecision(incremento);
     }
 
     @Override

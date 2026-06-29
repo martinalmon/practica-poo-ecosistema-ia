@@ -1,6 +1,6 @@
 package com.ia.modelos;
 
-public class ModeloRegresion extends ModeloIA {
+public class ModeloRegresion extends ModeloIAAbstraccion {
 
     private double coeficienteRegularizacion;
 
@@ -11,6 +11,14 @@ public class ModeloRegresion extends ModeloIA {
 
     public double getCoeficienteRegularizacion() {
         return coeficienteRegularizacion;
+    }
+
+    @Override
+    public void entrenar() {
+        incrementarEpocas();
+
+        double incremento = getTasaAprendizaje() * 10 - coeficienteRegularizacion;
+        aumentarPrecision(incremento);
     }
 
     @Override
